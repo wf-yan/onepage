@@ -1,0 +1,847 @@
+﻿
+
+html_content = '''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>祝自己 · 岁岁常欢愉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        /* ========== 音乐控制按钮 ========== */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            cursor: pointer;
+            font-size: 28px;
+            color: #ffd1dc;
+            text-shadow: 0 0 15px rgba(255,209,220,0.6);
+            transition: transform 0.3s;
+            user-select: none;
+        }
+        .music-control:hover {
+            transform: scale(1.2);
+        }
+
+        /* ========== 图片轮播背景 ========== */
+        .slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            animation: slideShow 42s infinite;
+        }
+
+        .slide:nth-child(1) { 
+            background-image: url('images/photo1.jpeg'); 
+            animation-delay: 0s; 
+        }
+        .slide:nth-child(2) { 
+            background-image: url('images/photo2.jpeg'); 
+            animation-delay: 6s; 
+        }
+        .slide:nth-child(3) { 
+            background-image: url('images/photo3.jpeg'); 
+            animation-delay: 12s; 
+        }
+        .slide:nth-child(4) { 
+            background-image: url('images/photo4.jpeg'); 
+            animation-delay: 18s; 
+        }
+        .slide:nth-child(5) { 
+            background-image: url('images/photo5.jpeg'); 
+            animation-delay: 24s; 
+        }
+        .slide:nth-child(6) { 
+            background-image: url('images/photo6.jpeg'); 
+            animation-delay: 30s; 
+        }
+        .slide:nth-child(7) { 
+            background-image: url('images/photo7.jpeg'); 
+            animation-delay: 36s; 
+        }
+
+        @keyframes slideShow {
+            0%   { opacity: 0; transform: scale(1.1); }
+            4%   { opacity: 1; transform: scale(1); }
+            14.2%  { opacity: 1; }
+            18.2%  { opacity: 0; transform: scale(1.05); }
+            100% { opacity: 0; }
+        }
+
+        /* 暗色遮罩 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(8, 18, 38, 0.65) 0%,
+                rgba(16, 26, 53, 0.45) 40%,
+                rgba(16, 16, 20, 0.7) 100%
+            );
+            z-index: -1;
+        }
+
+        /* ========== 场景内容 ========== */
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 星星 */
+        .stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.25; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.35); }
+        }
+
+        /* 月亮 */
+        .moon {
+            position: absolute;
+            top: 70px;
+            right: 120px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #fff8d6;
+            box-shadow: 0 0 20px rgba(255, 248, 214, 0.8), 0 0 40px rgba(255, 248, 214, 0.35), 0 0 70px rgba(255, 248, 214, 0.2);
+            animation: moonGlow 3s ease-in-out infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes moonGlow {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 248, 214, 0.8), 0 0 40px rgba(255, 248, 214, 0.35), 0 0 70px rgba(255, 248, 214, 0.2);
+            }
+            to {
+                transform: scale(1.03);
+                box-shadow: 0 0 26px rgba(255, 248, 214, 0.95), 0 0 52px rgba(255, 248, 214, 0.45), 0 0 90px rgba(255, 248, 214, 0.26);
+            }
+        }
+
+        /* 标题 */
+        .title {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.92);
+            text-align: center;
+            z-index: 5;
+            animation: fadeDown 2s ease;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .title .exclusive {
+            font-size: 13px;
+            color: #ffd1dc;
+            letter-spacing: 8px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .title h1 {
+            font-size: 44px;
+            letter-spacing: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffd1dc, #ffb6c1, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 4px;
+            font-style: italic;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* ========== 祝福区域 ========== */
+        .blessing {
+            position: absolute;
+            top: 190px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 5;
+            max-width: 550px;
+            padding: 0 20px;
+        }
+
+        .blessing-text {
+            font-size: 15px;
+            color: rgba(255,255,255,0.85);
+            line-height: 2.2;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.15);
+            animation: fadeIn 4s ease;
+        }
+
+        .blessing-text .highlight {
+            color: #ffd1dc;
+            font-weight: 500;
+            text-shadow: 0 0 12px rgba(255, 209, 220, 0.4);
+        }
+
+        .blessing-text .verse {
+            display: block;
+            margin: 6px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 地面 */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 220px;
+            background: radial-gradient(ellipse at center top, rgba(40,50,40,0.6), transparent 60%), 
+                        linear-gradient(to top, rgba(5,5,5,0.9) 0%, rgba(10,10,10,0.8) 65%, rgba(17,17,17,0.7) 100%);
+            border-top-left-radius: 50% 40px;
+            border-top-right-radius: 50% 40px;
+            z-index: 6;
+        }
+
+        /* 长椅 */
+        .bench {
+            position: absolute;
+            left: 50%;
+            bottom: 110px;
+            transform: translateX(-50%);
+            width: 230px;
+            height: 16px;
+            background: #2f2f35;
+            border-radius: 10px;
+            z-index: 9;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+        }
+
+        .bench::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            bottom: 16px;
+            width: 190px;
+            height: 12px;
+            background: #3a3a44;
+            border-radius: 8px;
+            box-shadow: 0 -18px 0 #434350, 0 -36px 0 #4d4d5d;
+        }
+
+        .leg {
+            position: absolute;
+            width: 8px;
+            height: 50px;
+            background: #2c2c31;
+            bottom: -48px;
+            border-radius: 4px;
+        }
+
+        .leg.left { left: 28px; }
+        .leg.right { right: 28px; }
+
+        /* ========== 女主 -  ========== */
+        .girl-solo {
+            position: absolute;
+            left: 50%;
+            bottom: 125px;
+            transform: translateX(-50%);
+            width: 62px;
+            height: 130px;
+            z-index: 10;
+            animation: breathe 4s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-2px); }
+        }
+
+        .girl-solo .head {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            width: 32px;
+            height: 32px;
+            background: #070707;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .girl-solo .hair {
+            position: absolute;
+            top: -2px;
+            left: 10px;
+            width: 42px;
+            height: 50px;
+            background: #070707;
+            border-radius: 21px 21px 18px 18px;
+            z-index: 1;
+        }
+
+        .girl-solo .body {
+            position: absolute;
+            top: 28px;
+            left: 10px;
+            width: 42px;
+            height: 62px;
+            background: #070707;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+            border-radius: 10px;
+        }
+
+        .girl-solo .arm-left {
+            position: absolute;
+            top: 42px;
+            left: -6px;
+            width: 30px;
+            height: 8px;
+            background: #070707;
+            border-radius: 10px;
+            transform: rotate(22deg);
+            transform-origin: right center;
+            animation: armSway 3s ease-in-out infinite;
+        }
+
+        .girl-solo .arm-right {
+            position: absolute;
+            top: 42px;
+            right: -6px;
+            width: 30px;
+            height: 8px;
+            background: #070707;
+            border-radius: 10px;
+            transform: rotate(-22deg);
+            transform-origin: left center;
+            animation: armSway 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes armSway {
+            0%, 100% { transform: rotate(22deg); }
+            50% { transform: rotate(30deg); }
+        }
+
+        .girl-solo .leg1, .girl-solo .leg2 {
+            position: absolute;
+            top: 86px;
+            width: 9px;
+            height: 40px;
+            background: #070707;
+            border-radius: 8px;
+        }
+
+        .girl-solo .leg1 { left: 16px; transform: rotate(6deg); }
+        .girl-solo .leg2 { left: 30px; transform: rotate(-4deg); }
+
+        /* 爱心 */
+        .hearts {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .heart {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            transform: rotate(45deg);
+            animation: floatUp linear forwards;
+            opacity: 0.85;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before { left: -9px; top: 0; }
+        .heart::after { left: 0; top: -9px; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(45deg) scale(0.7); opacity: 0; }
+            15% { opacity: 0.9; }
+            100% { transform: translateY(-220px) translateX(var(--drift)) rotate(45deg) scale(1.2); opacity: 0; }
+        }
+
+        /* 流星 */
+        .shooting-star {
+            position: absolute;
+            top: 120px;
+            left: 75%;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff;
+            z-index: 3;
+            animation: shoot 6s linear infinite;
+        }
+
+        .shooting-star::after {
+            content: "";
+            position: absolute;
+            top: 1px;
+            left: -90px;
+            width: 90px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.9));
+        }
+
+        @keyframes shoot {
+            0% { transform: translate(0, 0) rotate(-20deg); opacity: 0; }
+            8% { opacity: 1; }
+            18% { transform: translate(-260px, 110px) rotate(-20deg); opacity: 0; }
+            100% { transform: translate(-260px, 110px) rotate(-20deg); opacity: 0; }
+        }
+
+        /* 漂浮文字 */
+        .floating-texts {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .float-text {
+            position: absolute;
+            font-size: 16px;
+            font-weight: 400;
+            white-space: nowrap;
+            opacity: 0;
+            animation: textFloat linear forwards;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes textFloat {
+            0% { opacity: 0; transform: translateY(0) scale(0.8); }
+            10% { opacity: 0.9; }
+            80% { opacity: 0.7; }
+            100% { opacity: 0; transform: translateY(-350px) translateX(var(--drift-x)) scale(1.1); }
+        }
+
+        .glow-pink { color: #ffd1dc; text-shadow: 0 0 12px rgba(255, 209, 220, 0.6), 0 0 25px rgba(255, 209, 220, 0.3); }
+        .glow-red { color: #ff6b8a; text-shadow: 0 0 12px rgba(255, 107, 138, 0.6), 0 0 25px rgba(255, 107, 138, 0.3); }
+        .glow-gold { color: #ffe4b5; text-shadow: 0 0 12px rgba(255, 228, 181, 0.6), 0 0 25px rgba(255, 228, 181, 0.3); }
+        .glow-white { color: #ffffff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 0 0 25px rgba(255, 255, 255, 0.2); }
+        .glow-purple { color: #e6e6fa; text-shadow: 0 0 12px rgba(230, 230, 250, 0.6), 0 0 25px rgba(230, 230, 250, 0.3); }
+
+        /* 图片指示器 */
+        .indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            animation: dotPulse 42s infinite;
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 6s; }
+        .dot:nth-child(3) { animation-delay: 12s; }
+        .dot:nth-child(4) { animation-delay: 18s; }
+        .dot:nth-child(5) { animation-delay: 24s; }
+        .dot:nth-child(6) { animation-delay: 30s; }
+        .dot:nth-child(7) { animation-delay: 36s; }
+
+        @keyframes dotPulse {
+            0%, 14.2% { background: rgba(255,255,255,0.9); transform: scale(1.2); }
+            15.2%, 100% { background: rgba(255,255,255,0.3); transform: scale(1); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .title .exclusive { font-size: 11px; letter-spacing: 4px; }
+            .title h1 { font-size: 32px; letter-spacing: 6px; }
+            .title p { font-size: 13px; }
+            .blessing { top: 160px; max-width: 90%; }
+            .blessing-text { font-size: 13px; line-height: 2; }
+            .moon { width: 70px; height: 70px; right: 30px; top: 40px; }
+            .bench { width: 190px; }
+            .bench::before { width: 150px; }
+            .girl-solo { transform: translateX(-50%) scale(0.9); }
+            .float-text { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 背景音乐 ========== -->
+
+    <audio id="bgm" loop>
+        <source src="music/一半一半.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 音乐控制按钮 -->
+    <div class="music-control" onclick="toggleMusic()">🎵</div>
+
+    <!-- ========== 图片轮播背景 ========== -->
+    <div class="slideshow-container">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+    </div>
+    <div class="overlay"></div>
+
+    <div class="scene">
+        <div class="stars" id="stars"></div>
+        <div class="moon"></div>
+        <div class="shooting-star"></div>
+
+        <div class="title">
+            <div class="exclusive">送 给 不 一 样 的 你</div>
+            <h1>今天 明天 每一天 </h1>
+            <p>   年年皆盛意 · 岁岁常欢愉</p>
+        </div>
+
+        <!-- 祝福区域 -->
+        <div class="blessing">
+            <div class="blessing-text">
+                <span class="verse">致<span class="highlight">自己</span>：</span>
+                <span class="verse">愿你岁岁常欢愉，年年皆胜意</span>
+                <span class="verse">不必焦虑，不必慌张，时光自有答案</span>
+                <span class="verse">相信自己，你比想象中更勇敢</span>
+                <span class="verse">前路漫漫亦灿灿，愿你一路有光</span>
+                <span class="verse">天天开心，万事顺遂，所求皆如愿 ✨</span>
+            </div>
+        </div>
+
+        <div class="hearts" id="hearts"></div>
+        <div class="floating-texts" id="floatingTexts"></div>
+
+        <div class="bench">
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+        </div>
+
+        <!-- 女主 - xxx -->
+        <div class="girl-solo">
+            <div class="hair"></div>
+            <div class="head"></div>
+            <div class="body"></div>
+            <div class="arm-left"></div>
+            <div class="arm-right"></div>
+            <div class="leg1"></div>
+            <div class="leg2"></div>
+        </div>
+
+        <div class="ground"></div>
+
+        <!-- 图片切换指示器 -->
+        <div class="indicators">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <script>
+    const loveTexts = [
+        "你是自己眼中最耀眼的星光.",
+        "心怀期许，奔赴属于自己的美好前程.",
+        "满心温柔，尽数留给独一无二的自己.",
+        "眉眼含笑，便是治愈日常万般烦恼的良方.",
+        "心藏欢喜，岁岁皆能悦纳本心热爱自我.",
+        "遍历世间山河，终寻得独属于自己的人间暖意.",
+        "愿伴自身朝夕相伴，从晨光微熹走到落日余晖.",
+        "未悟本心之时满心迷茫，认清自我之后笃定余生方向.",
+        "此生漫漫长路，自己便是一生最真切的牵挂.",
+        "愿岁月温柔相待，以满心欢喜共度岁岁流年.",
+        "坚守本心自成锋芒，生来明媚与所有美好相配.",
+        "心藏皎洁明月，眼揽璀璨星河，自成万般风光.",
+        "十里春风万般景致，皆不及从容自在的自己.",
+        "纵使人间烟火滚烫，自身亦是此生无上理想.",
+        "愿往后岁月，陪自己走过春夏秋冬岁岁年年.",
+        "纵览天地辽阔风光，只愿与本心并肩奔赴远方.",
+        "把所有柔软心绪，悄悄藏进心底赠予自己.",
+        "怀揣满腔热忱初心，心之所向皆是美好自我.",
+        "深爱自己从不止今日，岁岁年年始终如一.",
+        "始于满心悦己欢喜，止于余生安稳顺遂.",
+        "明目张胆偏爱自己，毫无保留善待本心.",
+        "世间万般心绪起落，唯有自己最懂自身悲欢.",
+        "守一室清欢安然，享三餐烟火温暖，度四季安稳时光.",
+        "自己是心底深处最为缱绻温柔的清梦.",
+        "遇见越来越好的自己，是此生莫大幸运.",
+        "往后漫漫余生，风雨悲欢皆是经历，平淡日常皆是欢喜.",
+        "所有顺遂美好，皆是命中注定奔赴而来.",
+        "心怀柔软自愈伤痛，身披勇气抵挡世间风霜.",
+        "此生初心不改，永远热忱热爱自己.",
+        "月下独自成双清影，皆是安然自在的模样.",
+        "放下匆忙步履，静静虚度温柔惬意的时光.",
+        "今夜月色清幽美好，愿自身万事顺意平安无忧.",
+        "坦然接纳所有不足，便是一切美好的全新开端.",
+        "深爱自我如同清风跨越千里山河，一往无前不问归期.",
+        "祈愿自己岁岁平安无忧，年年顺心皆得圆满.",
+        "鲜活热烈的自己，是人生落笔写下最美的诗篇.",
+        "强大内心积攒底气，自己便是前行路上全部力量.",
+        "心怀澄澈向阳而生，自己便是整片明朗天地.",
+        "愿往后余生无灾无难，平安喜乐常伴左右.",
+        "坚守心中温热期许，从容携手岁月安稳前行.",
+        "赤诚热爱自己，岁岁年年永恒不变.",
+        "与美好自我相逢，是这辈子最美的际遇.",
+        "褪去浮躁静守本心，从容淡然与自己慢慢老去.",
+        "眼眸深藏星辰大海，胸襟容纳万里风月山河.",
+        "所有坚持与奔赴皆有意义，只因始终忠于自己.",
+        "努力活成心中向往的模样，邂逅世间所有温柔光景.",
+        "独自领略人间万千繁华，静赏沿途一路锦绣风光.",
+        "心底藏柔软万般温情，身有坚不可摧无畏铠甲.",
+        "学会好好宠爱自己，是人生之中最正确的抉择.",
+        "前路漫漫亦灿灿，往后余生还请温柔善待自己.",
+        "心怀浪漫怀揣憧憬，编织独属于自己的温柔美梦.",
+        "从年少满心悸动欢喜，走到暮年安然平和岁月，始终陪伴自我.",
+        "为自己构筑温暖港湾，遮风挡雨安放疲惫心绪.",
+        "独属于自己的名字，是人生里最短最美的祝福寄语.",
+        "祈愿此生一世安稳顺遂，朝朝暮暮满含欢愉.",
+        "静享静谧浪漫良夜，独享人间温柔烟火日常.",
+        "收拢世间所有细碎温柔，尽数赠予赤诚纯粹的自己.",
+        "知足常乐看淡得失，悦纳自我便是一生福气.",
+        "坚守最初赤诚本心，风雨岁月始终不离不弃.",
+        "自身是心底难忘白月光，亦是心头温润朱砂痣.",
+        "晚安，愿温柔美好的自己一夜安睡好梦常临.",
+        "早安，愿积极勇敢的自己迎着晨光奔赴新程.",
+        "深爱自我从无期限，满心热忱不问岁月长短.",
+        "人生旅途故事悠长，静下心来慢慢品味人间百态.",
+        "满心奔赴所有期许，自己便是未来全部美好憧憬.",
+        "一路走来遇见自我，是人生路上最惊喜的意外.",
+        "愿往后日子安稳无忧，从容喜乐相伴共度白头.",
+        "执笔书写平凡日常，书写独属于自己清雅诗意人生.",
+        "世间万般风景皆无可替代，唯有本心独一无二珍贵.",
+        "相伴走过青葱年少岁月，携手共度白发悠然暮年.",
+        "平淡烟火寻常朝夕，自己便是生活里最清甜的蜜糖.",
+        "放平心态善待自我，是此生最为明智的决定.",
+        "朝暮朝夕紧紧相依，岁岁年年永远相伴不离.",
+        "打造专属浪漫精神天地，守好内心清净自在小世界.",
+        "今日热爱胜过昨日欢喜，日日深情愈发浓厚绵长.",
+        "往后每一朝夕时日，皆是满心宠爱自己的美好时光.",
+        "心怀滚烫热爱奔赴前路，静守安然岁月岁岁安宁.",
+        "心怀世间最柔和月光，身携人间最和煦清风.",
+        "坚守内心最初热忱，一生守护温柔纯粹的自己.",
+        "走过一路风雨起落，默默陪伴自己熬过所有艰难时光.",
+        "一生坚守悦己初心，热爱自我便是永恒不变信仰.",
+        "倾尽余生漫长岁月，温柔善待珍贵无比的自己.",
+        "崭新人生旅途刚刚启程，满怀热血为自己加油鼓劲.",
+        "长存澄澈干净本心，奋力奔赴璀璨光明远大前程.",
+        "愿往后前路无畏风雨荆棘，所行之路皆是平坦通途.",
+        "愿余生心境安然平和，看淡世事纷扰万事皆无忧愁.",
+        "愿所有默默付出皆有圆满回报，心中所想皆能如愿成真.",
+        "愿以淡然之心看淡日常琐事，自在从容尽享惬意生活.",
+        "愿此生身心康健无疾，岁岁平安日日喜乐无忧.",
+        "愿行走人间步履轻盈从容，前路浩荡未来光芒万丈.",
+        "愿拥有一往无前的无畏勇气，亦有随心停歇的自在自由.",
+        "愿被世间所有善意温柔相拥，一生被偏爱被细心守护.",
+        "愿历经世事依旧守住纯粹童心，一生温暖明亮向阳而生.",
+        "愿过往岁月毫无遗憾牵绊，往后余生不惧前路风霜.",
+        "愿活成自己心中暖阳星辰，无需借他人微光温暖自身.",
+        "愿前程似锦繁花铺路，一生顺遂书写璀璨人生篇章.",
+        "愿走遍人间四方天地，邂逅世间所有温柔美好事物.",
+        "愿内心坚韧亦心怀柔软，一路向阳永远稳步前行.",
+        "愿不负匆匆流逝时光，不负赤诚本心，活出耀眼模样.",
+        "愿一生安稳无忧喜乐绵长，岁岁年年皆是圆满光景.",
+        "愿历尽世间千帆风雨归来，依旧留存少年纯粹意气.",
+        "愿前路光明万丈明朗，不断成长遇见更加优秀的自己.",
+        "愿此生岁岁安然无恙，朝朝暮暮欢喜常伴身旁.",
+        "愿心中常怀山海辽阔胸襟，所遇人间皆是温柔善意.",
+        "愿抛开俗世繁杂烦恼，日日清闲自在满心欢愉.",
+        "愿烟火日常满含温情暖意，奔赴前路皆是光明希望.",
+        "愿常怀自信满怀勇气，一生自信从容闪闪发光.",
+        "愿往后生活繁花相伴，日子温馨满是万般暖意.",
+        "愿始终心怀热爱不停成长，奔赴每一场美好相逢.",
+        "愿性情温润内心坚定沉稳，认真过好人间朝夕每日.",
+        "愿未来前路一片坦荡明朗，心中万千梦想皆能圆满实现.",
+        "愿一生身体健康平安顺遂，岁岁年年长久喜乐无忧.",
+        "愿走遍世间万里山河，历经百态依旧深爱滚烫生活.",
+        "愿心境如同皓月澄澈明净，人生恰似繁星璀璨耀眼.",
+        "愿往后生活无拘无束，随心而行尽享自在欢愉.",
+        "愿心中常驻温暖避风港湾，眼前永远皆是明朗前程.",
+        "愿余生不断蜕变成长，永远活成最完美理想模样.",
+        "愿日常被满心幸福环绕，远离世间所有忧愁烦闷.",
+        "愿往后岁月安稳悠长，世间所有美好悉数奔赴而来.",
+        "愿始终坚守最初赤诚本心，一路向阳奔赴远方山海.",
+        "愿人生一路繁花相伴盛放，岁岁年年欢喜源源不断.",
+        "愿此生常遇世间万般温柔，长存心底纯粹善良本心."
+    ];
+
+    const textColors = ["glow-pink", "glow-red", "glow-gold", "glow-white", "glow-purple"];
+    const textSizes = ["14px", "15px", "16px", "17px", "18px", "13px"];
+
+    // 生成星星
+    const stars = document.getElementById("stars");
+    for (let i = 0; i < 120; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        const size = Math.random() * 2.8 + 1;
+        star.style.width = size + "px";
+        star.style.height = size + "px";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = Math.random() * 75 + "%";
+        star.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        star.style.animationDelay = (Math.random() * 3) + "s";
+        stars.appendChild(star);
+    }
+
+    // 漂浮爱心
+    const hearts = document.getElementById("hearts");
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        const colors = ["#ff5c8a", "#ff7aa2", "#ff94b8", "#ffd1dc", "#ff1493", "#ffb6c1"];
+        heart.style.background = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.left = (48 + Math.random() * 8) + "%";
+        heart.style.bottom = (150 + Math.random() * 20) + "px";
+        heart.style.setProperty("--drift", (Math.random() * 80 - 40) + "px");
+        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        hearts.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHeart, 700);
+
+    // 漂浮文字
+    const floatingTexts = document.getElementById("floatingTexts");
+    let textIndex = 0;
+
+    function createFloatingText() {
+        const text = document.createElement("div");
+        text.className = "float-text " + textColors[Math.floor(Math.random() * textColors.length)];
+        text.textContent = loveTexts[textIndex % loveTexts.length];
+        textIndex++;
+
+        let leftPos, topPos;
+        const zone = Math.random();
+        if (zone < 0.3) {
+            leftPos = Math.random() * 30;
+            topPos = 20 + Math.random() * 60;
+        } else if (zone < 0.6) {
+            leftPos = 70 + Math.random() * 28;
+            topPos = 20 + Math.random() * 60;
+        } else {
+            leftPos = Math.random() * 90;
+            topPos = 10 + Math.random() * 25;
+        }
+
+        text.style.left = leftPos + "%";
+        text.style.top = topPos + "%";
+        text.style.fontSize = textSizes[Math.floor(Math.random() * textSizes.length)];
+        text.style.setProperty("--drift-x", (Math.random() * 100 - 50) + "px");
+        text.style.animationDuration = (6 + Math.random() * 4) + "s";
+
+        floatingTexts.appendChild(text);
+        setTimeout(() => text.remove(), 10000);
+    }
+
+    setInterval(createFloatingText, 1200);
+    for (let i = 0; i < 5; i++) {
+        setTimeout(createFloatingText, i * 300);
+    }
+
+    // 音乐控制
+    function toggleMusic() {
+        const bgm = document.getElementById('bgm');
+        const btn = document.querySelector('.music-control');
+        
+        if (bgm.paused) {
+            bgm.play().then(() => {
+                btn.textContent = '🔊';
+            }).catch(err => {
+                console.log('播放失败:', err);
+                alert('请点击页面任意位置后再播放音乐');
+            });
+        } else {
+            bgm.pause();
+            btn.textContent = '🎵';
+        }
+    }
+    </script>
+</body>
+</html>'''
+
+# 保存文件
+output_path = '/mnt/agents/output/甄爽专属_愿你安好.html'
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("✅ 甄爽专属版已生成！")
+print(f"📁 路径: {output_path}")
+print(f"📊 文件大小: {len(html_content)} 字符")
+print(f"🎵 7张照片轮播 · 李荣浩《恋人》")
+print(f"💝 诗意祝福已加入：不焦虑、相信自己、天天开心")
